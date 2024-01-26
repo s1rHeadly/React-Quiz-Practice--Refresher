@@ -2,6 +2,7 @@ import { useReducer, useEffect } from "react";
 import Header from "./components/global/Header";
 import Main from './components/global/Main';
 import StartScreen from "./components/UI/StartScreen";
+import Question from "./components/Question";
 
 
 
@@ -14,6 +15,8 @@ const initialState = {
   questions: [],
   status: '',
   error: null,
+  index: 0,
+  answer: null,
 }
 
 
@@ -51,6 +54,12 @@ function qtnsFunc(state, action){
         status: 'active',
         error: null
       }
+    
+    case 'newAnswer':
+    return {
+     ...state,
+     answer: action.payload,
+    }
 
     default:
     return state;
@@ -64,13 +73,12 @@ const App = () => {
 
   const [state, dispatch] = useReducer(qtnsFunc, initialState);
   // console.log(`render => `, questionsState)
-  const {questions, status} = state;
+  const {questions, status, index, answer} = state;
   
 
 
   useEffect(() => {
     
-
    const getQuestions = async(url) => {
 
         try {
@@ -79,7 +87,7 @@ const App = () => {
           })
 
           const response = await fetch(url);
-          console.log(response)
+          // console.log(response)
           if(!response.ok) return;
 
           if(response.status === 200){
@@ -103,7 +111,6 @@ const App = () => {
   }, []);
 
 
-  console.log(questions)
 
   return (
     <div className="app">
@@ -113,7 +120,10 @@ const App = () => {
       {status === 'loading' && <Loader />}
       {status ===  'error' && <Error />}
       {status === 'ready' && <StartScreen dispatch={dispatch} questions={questions}/>}
-      {status === 'active' && <div>show App</div>}
+      {status === 'active' && 
+      <>
+      <Question question={questions[index]} answer={answer} dispatch={dispatch}/>
+      </>}
     </Main>
     </div>
   );
