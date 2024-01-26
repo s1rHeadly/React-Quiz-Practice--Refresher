@@ -6,11 +6,14 @@ import StartScreen from "./components/UI/StartScreen";
 
 
 import { LOCAL_URL } from "./utils/helpers";
+import Loader from "./components/UI/Loader";
+import Error from "./components/global/Error";
 
 
 const initialState = {
   questions: [],
   status: '',
+  error: null,
 }
 
 
@@ -21,22 +24,34 @@ function qtnsFunc(state, action){
       
     case 'loading':
       return {
-        ...state, status: true,
+        ...state,
+        status: 'loading',
+        error: null
       }
 
     case 'dataReceived':
       return {
         ...state,
         questions: action.payload,
-        status: 'ready'
+        status: 'ready',
+        error: null
       }
 
 
-    case 'error':
+    case 'dataFailed':
       return {
-        ...state, status: action.payload
+        ...state,
+        status: 'error',
+        error: action.payload
       }
   
+    case 'start':
+      return {
+        ...state,
+        status: 'active',
+        error: null
+      }
+
     default:
     return state;
   }
@@ -53,14 +68,12 @@ const App = () => {
   
 
 
-
-
   useEffect(() => {
+    
 
    const getQuestions = async(url) => {
 
         try {
-          
           dispatch({
             type: 'loading',
           })
@@ -71,7 +84,6 @@ const App = () => {
 
           if(response.status === 200){
             const data = await response.json();
-            // console.log('response => ', data)
             dispatch({
               type: 'dataReceived',
               payload: data
@@ -90,12 +102,18 @@ const App = () => {
 
   }, []);
 
+
+  console.log(questions)
+
   return (
     <div className="app">
      <Header />
 
     <Main>
-      {status === 'ready' && console.log('ready')}
+      {status === 'loading' && <Loader />}
+      {status ===  'error' && <Error />}
+      {status === 'ready' && <StartScreen dispatch={dispatch} questions={questions}/>}
+      {status === 'active' && <div>show App</div>}
     </Main>
     </div>
   );
