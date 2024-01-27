@@ -5,7 +5,7 @@ const Options = ({options, answer, correctOption, dispatch}) => {
 
   const hasAnswer = answer !== null; // true or false value
  
-  console.log(hasAnswer)
+  
 
   function handleAnswer(index){
     dispatch({
@@ -21,14 +21,13 @@ const Options = ({options, answer, correctOption, dispatch}) => {
 
     <div className='options'>
       {
-       options?.map((option, index) =>
+       options?.length > 0 && options?.map((option, index) =>
           <button
           onClick={() => handleAnswer(index)}
           disabled={hasAnswer}
           key={option}
           className={
-            `btn btn-option ${index === answer ? "answer" : ""} ${hasAnswer && index === correctOption ? "correct" : "wrong"}`}
-          >
+            `btn btn-option ${index === answer ? "answer" : ""} ${hasAnswer && index === correctOption ? "correct" : "wrong"}`}>
             {option}
           </button>)
       }

@@ -9,6 +9,7 @@ import Question from "./components/Question";
 import { LOCAL_URL } from "./utils/helpers";
 import Loader from "./components/UI/Loader";
 import Error from "./components/global/Error";
+import NextQuestion from "./components/NextQuestion";
 
 
 const initialState = {
@@ -76,6 +77,8 @@ const App = () => {
   const {questions, status, index, answer} = state;
   
 
+  //derived state
+  const numberOfQuestions = questions.length;
 
   useEffect(() => {
     
@@ -123,6 +126,7 @@ const App = () => {
       {status === 'active' && 
       <>
       <Question question={questions[index]} answer={answer} dispatch={dispatch}/>
+      <NextQuestion answer={answer} index={index} dispatch={dispatch} numberOfQuestions={numberOfQuestions}/>
       </>}
     </Main>
     </div>
